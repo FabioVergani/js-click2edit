@@ -1,0 +1,91 @@
+
+<style>
+ .flex{display:flex;display:-webkit-flex;}
+ .flex span.text:focus{outline:none;}
+
+ .clicktoedit button{float:left;margin:0 .4em 0 0;}
+ .clicktoedit a .url{white-space:nowrap;}
+ .clicktoedit a .text[contenteditable="true"]{background:#FFE800;padding:.2em;vertical-align:middle;display:inline-block;line-height:.7em;}
+</style>
+
+<div id="pippo" spellcheck="false" class="clicktoedit">
+	<button>TEST</button>
+	<a class="flex">
+		<span class="url">
+			ddd
+				<span class="text">zzzz</span>
+			ddd
+		</span>
+	</a>
+</div>
+
+<script>
+(function(rid){
+
+ function inibit(evt){var o=evt;o.preventDefault();o.stopPropagation();return o.target;}
+ function stripwhitespace(t){return t.trim().replace(/\s+/g,'');};
+
+
+ var d=document, R=d.getElementById(rid), first=function(s){return R.querySelectorAll(s)[0];}, n, i=-1,
+ u=first('a .url'),
+ m=u.querySelectorAll('.text'),
+ btn=first('button');
+
+ first=null;
+
+ function uselink(){
+	var str=stripwhitespace(u.innerText);
+	if(confirm(str)){window.open(str,'_blank');};
+ };
+
+ function dClick(evt){
+	var e=evt.target,o=R.lastElementClicked;
+	if(o){
+		if(R.contains(e)){
+			if(e!=o){
+				o.contentEditable=false;
+			};
+		}else{
+			o.contentEditable=R.lastElementClicked=false;
+		};
+		o.removeEventListener('click',inibit);
+		o.addEventListener('click',nClick);
+	};
+ };
+
+ function nClick(evt){
+	var e=inibit(evt);
+	R.lastElementClicked=e;
+	e.removeEventListener('click',nClick);
+	e.addEventListener('click',inibit);
+	R.addEventListener('click',inibit);
+	e.contentEditable=true;
+	return false;
+ };
+
+ while(n=m[++i]){n.addEventListener('click',nClick);};
+ n=i=m=null;
+
+ d.addEventListener('click',dClick);
+ R.addEventListener('click',dClick);
+ R.addEventListener('click',inibit);
+
+ btn.addEventListener('click',uselink);
+
+})('pippo');
+
+
+
+//
+
+/*
+  console.clear();
+  	//if(o){};
+		//alert(o.innerText);
+
+	//console.dir(this);
+*/
+
+</script>
+
+
